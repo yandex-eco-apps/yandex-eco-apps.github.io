@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Верните контроль над временем — экосистема Яндекс</title>
+    <style>
+        :root {
+            --bg-body: #f4f6f9;
+            --bg-card: #ffffff;
+            --text-main: #1a1b20;
+            --text-muted: #6b7280;
+            --accent: #1d4ed8;
+            --accent-hover: #1e3a8a;
+            --gold: #c2780d;
+            --shadow-sm: 0 4px 6px -1px rgba(0, 0, 0, 0.06);
+            --shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.12);
+            --radius-sm: 8px;
+            --radius-md: 16px;
+            --radius-lg: 24px;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Inter', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        h1, h2, h3 {
+            font-weight: 700;
+            letter-spacing: -0.015em;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        header {
+            padding: 90px 0 60px;
+            text-align: center;
+        }
+
+        header h1 {
+            font-size: clamp(2.8rem, 5vw, 4rem);
+            line-height: 1.1;
+            color: var(--text-main);
+            position: relative;
+            z-index: 1;
+        }
+
+        header h1::before {
+            content: "";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 120%;
+            height: 60%;
+            background: linear-gradient(135deg, rgba(29, 78, 216, 0.15), transparent);
+            filter: blur(40px);
+            z-index: 0;
+        }
+
+        header p {
+            color: var(--text-muted);
+            font-size: 1.25rem;
+            max-width: 720px;
+            margin: 24px auto 0;
+            position: relative;
+            z-index: 1;
+        }
+
+        section {
+            padding: 80px 0;
+        }
+
+        .section-title {
+            font-size: 2.4rem;
+            margin-bottom: 36px;
+            position: relative;
+            display: inline-block;
+        }
+
+        .section-title::after {
+            content: '';
+            display: block;
+            width: 80px;
+            height: 4px;
+            background: var(--gold);
+            margin-top: 14px;
+            border-radius: 2px;
+        }
+
+        .problem-block {
+            background: var(--bg-card);
+            padding: 64px;
+            box-shadow: var(--shadow-md);
+            border-radius: var(--radius-md);
+            border-left: 6px solid var(--accent);
+        }
+
+        .problem-block h2 {
+            font-size: 2rem;
+            margin-bottom: 28px;
+        }
+
+        .problem-list {
+            list-style: none;
+            margin-top: 24px;
+        }
+
+        .problem-list li {
+            margin-bottom: 18px;
+            padding-left: 32px;
+            position: relative;
+        }
+
+        .problem-list li::before {
+            content: "";
+            position: absolute;
+            top: 8px;
+            left: 0;
+            width: 12px;
+            height: 12px;
+            background: var(--accent);
+            border-radius: 50%;
+        }
+
+        .solution-block {
+            text-align: center;
+            background: #ffffff;
+            padding: 72px;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-lg);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .solution-block::before,
+        .solution-block::after {
+            content: "";
+            position: absolute;
+            filter: blur(80px);
+            opacity: 0.3;
+            pointer-events: none;
+        }
+        .solution-block::before {
+            top: -10%; left: -10%; width: 300px; height: 300px; background: var(--accent); border-radius: 50%;
+        }
+        .solution-block::after {
+            bottom: -10%; right: -10%; width: 300px; height: 300px; background: var(--gold); border-radius: 50%;
+        }
+
+        .solution-block h2 {
+            font-size: 2.2rem;
+            margin-bottom: 32px;
+        }
+
+        .solution-desc {
+            font-size: 1.3rem;
+            color: var(--text-muted);
+            max-width: 680px;
+            margin: 0 auto 40px;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 32px;
+            margin-top: 48px;
+        }
+
+        .feature-card {
+            background: #f9fafb;
+            padding: 36px;
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-sm);
+            text-align: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .feature-icon {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            display: block;
+        }
+
+        .cta-block {
+            text-align: center;
+            padding: 84px 24px;
+            background: #0f1115;
+            color: #fff;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .cta-title {
+            font-size: 2.8rem;
+            margin-bottom: 16px;
+        }
+
+        .cta-text {
+            font-size: 1.2rem;
+            color: #9ca3af;
+            margin-bottom: 40px;
+        }
+
+        .btn {
+            display: inline-block;
+            background: var(--accent);
+            color: white;
+            padding: 20px 56px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            text-decoration: none;
+            border-radius: 999px;
+            transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+            box-shadow: 0 10px 20px rgba(29, 78, 216, 0.25);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: "";
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle at center, rgba(255,255,255,0.1) 20%, transparent 50%);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .btn:hover {
+            transform: scale(1.03);
+            box-shadow: 0 16px 32px rgba(29, 78, 216, 0.35);
+            background: var(--accent-hover);
+        }
+
+        .btn:hover::before {
+            opacity: 1;
+        }
+
+        footer {
+            text-align: center;
+            padding: 56px 0;
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            border-top: 1px solid #e5e7eb;
+        }
+
+        @media (max-width: 768px) {
+            header h1 { font-size: 2.6rem; }
+            .problem-block, .solution-block, .cta-block { padding: 40px 20px; }
+            .section-title::after { width: 60px; }
+            .solution-block::before, .solution-block::after { opacity: 0.2; }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>Верните контроль<br>над временем</h1>
+            <p>Когда задачи теряются, письма улетают в спам, а встречи накладываются друг на друга — вы теряете не только часы, но и уверенность в своих силах.</p>
+        </div>
+    </header>
+
+    <section>
+        <div class="container">
+            <div class="problem-block">
+                <h2 class="section-title">Знакомые проблемы?</h2>
+                <p style="color: var(--text-muted);">Мы собрали самые частые источники хаоса в повседневной работе и личной жизни:</p>
+                <ul class="problem-list">
+                    <li>Забытые дедлайны и пропущенные встречи</li>
+                    <li>Письма, которые теряются среди сотен других</li>
+                    <li>Файлы, которые невозможно найти даже по названию</li>
+                    <li>Дублирующиеся задачи и путаница в заметках</li>
+                    <li>Потеря времени на рутину вместо важных дел</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <div class="container">
+            <div class="solution-block">
+                <h2 class="section-title">Решение — экосистема Яндекс‑программ</h2>
+                <p class="solution-desc">
+                    Это не просто набор приложений, а единая система, которая помогает держать всё под контролем: от писем и встреч до файлов и задач. Всё синхронизировано, всё на своих местах.
+                </p>
+
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <span class="feature-icon">✉️</span>
+                        <h3>Почта</h3>
+                        <p style="color: var(--text-muted);">Умная сортировка, фильтры и быстрый поиск — чтобы важные письма не терялись.</p>
+                    </div>
+                    <div class="feature-card">
+                        <span class="feature-icon">🗓️</span>
+                        <h3>Календарь</h3>
+                        <p style="color: var(--text-muted);">Наглядное расписание, напоминания и интеграция с встречами — чтобы ничего не забыть.</p>
+                    </div>
+                    <div class="feature-card">
+                        <span class="feature-icon">📁</span>
+                        <h3>Диск</h3>
+                        <p style="color: var(--text-muted);">Хранение, поиск и обмен файлами — всё в одном месте и доступно с любого устройства.</p>
+                    </div>
+                    <div class="feature-card">
+                        <span class="feature-icon">🌐</span>
+                        <h3>Браузер</h3>
+                        <p style="color: var(--text-muted);">Быстрый доступ к сервисам, умная защита и персонализированные подсказки — чтобы работать эффективнее.</p>
+                    </div>
+                    <div class="feature-card">
+                        <span class="feature-icon">📍</span>
+                        <h3>Карты</h3>
+                        <p style="color: var(--text-muted);">Маршруты, пробки и места поблизости — чтобы добираться быстрее и планировать время точнее.</p>
+                    </div>
+                    <div class="feature-card">
+                        <span class="feature-icon">📝</span>
+                        <h3>Заметки</h3>
+                        <p style="color: var(--text-muted);">Фиксируйте идеи, списки дел и важные мысли — чтобы ничего не ускользнуло из фокуса.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <div class="container">
+            <div class="cta-block">
+                <h2 class="cta-title">Хватит терять время</h2>
+                <p class="cta-text">
+                    Верните себе контроль над делами и начните каждый день с ясности и спокойствия.
+                </p>
+                <!-- Ссылка-заглушка: замените на реальную ссылку скачивания/установки -->
+                <a href="#" class="btn">Навести порядок в делах — начать сейчас</a>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <p>© 2026 Экосистема Яндекс. Все права защищены.</p>
+        </div>
+    </footer>
+</body>
+</html>
